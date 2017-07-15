@@ -18,10 +18,14 @@ import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
+import android.widget.RatingBar
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.save_location.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 import java.io.File
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -38,7 +42,7 @@ class SaveLocationActivity : AppCompatActivity() {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.save_location)
-
+		window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
 		supportActionBar?.let { title = "Save Location" }
 
 		getAddress()
@@ -58,8 +62,32 @@ class SaveLocationActivity : AppCompatActivity() {
 			testIntent()
 		}
 
+		ratingsStar.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { ratingsbar, rating, fromUser ->
+			Log.d("TEST", "rating: $rating")
+		}
+
+		btnSave.setOnClickListener {
+			launch(UI) {
+
+				try {
+					val resp = Client.uploadImage(File(imgPath), "test.jpg",
+						tvTitle.text.toString(), autoTags.text.toString(),
+						editReview.text.toString(), ratingsStar.rating).await()
+
+					Log.d("TEST", "upload code: $resp.code()")
+
+				} catch(ex: IOException) {
+					Log.d("TEST", ex.printStackTrace().toString())
+				}
+
+			}
+
+
+		}
+
 
 	}
+
 
 	@SuppressLint("MissingPermission")
 	fun getAddress() {

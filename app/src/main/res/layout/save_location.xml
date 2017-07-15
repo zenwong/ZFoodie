@@ -1,61 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
-
-        <EditText
-            android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:maxLines="1"
-            android:inputType="text"
-            android:text="Title"/>
-
-        <FrameLayout android:layout_width="match_parent" android:layout_height="150sp">
-            <com.joanzapata.iconify.widget.IconTextView
-              android:id="@+id/tvAddPic"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:text="{fa-plus}"
-              android:textSize="150sp"
-              android:textAlignment="center"
-
-            />
-
-            <ImageView
-              android:id="@+id/ivMainProfile"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:layout_weight="1"
-              android:padding="5sp"
-              android:visibility="gone"
-            />
-
-        </FrameLayout>
-
-        <MultiAutoCompleteTextView
-            android:id="@+id/autoTags"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent">
 
-        <RatingBar
-            android:id="@+id/ratingsStar"
-            android:padding="5sp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+	<LinearLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/editReview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Review"/>
+		<EditText
+			android:id="@+id/tvTitle"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:maxLines="1"
+			android:inputType="text"
+			android:text="Title"/>
+
+		<FrameLayout android:layout_width="match_parent" android:layout_height="150sp">
+			<com.joanzapata.iconify.widget.IconTextView
+				android:id="@+id/tvAddPic"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:text="{fa-plus}"
+				android:textSize="150sp"
+				android:textAlignment="center"
+
+			/>
+
+			<ImageView
+				android:id="@+id/ivMainProfile"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:layout_weight="1"
+				android:padding="5sp"
+				android:visibility="gone"
+			/>
+
+		</FrameLayout>
+
+		<MultiAutoCompleteTextView
+			android:id="@+id/autoTags"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"/>
+
+		<RatingBar
+			android:id="@+id/ratingsStar"
+			android:numStars="5"
+			android:stepSize="1.0"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"/>
+
+		<EditText
+			android:id="@+id/editReview"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:text="Review"/>
+
+		<Button
+			android:id="@+id/btnSave"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Save"/>
 
 
-    </LinearLayout>
+	</LinearLayout>
 </ScrollView>
