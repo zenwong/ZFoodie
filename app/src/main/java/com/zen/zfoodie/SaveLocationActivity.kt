@@ -1,24 +1,23 @@
 package com.zen.zfoodie
 
 import android.Manifest
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.support.v4.app.ActivityCompat
-import com.google.android.gms.location.LocationServices
-import android.location.Location
-import android.util.Log
-import com.google.android.gms.tasks.OnSuccessListener
 import android.content.pm.PackageManager
+import android.location.Location
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.os.Environment
-import android.support.design.widget.Snackbar
-import android.view.View
-import android.os.Environment.DIRECTORY_PICTURES
 import android.provider.MediaStore
+import android.support.design.widget.Snackbar
+import android.support.v4.app.ActivityCompat
 import android.support.v4.content.FileProvider
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.OnSuccessListener
+import kotlinx.android.synthetic.main.save_location.*
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,13 +33,22 @@ class SaveLocationActivity : AppCompatActivity() {
 
 		supportActionBar?.let { title = "Save Location" }
 
+		getAddress()
+
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
 			if(!checkPermissions()) {
 				requestPermissions()
+				Log.d("TEST", "requesting permissions")
 			} else {
+				Log.d("TEST", "get address")
 				getAddress()
 			}
 		}
+
+		tvAddPic.setOnClickListener {
+			dispatchTakePictureIntent()
+		}
+
 
 	}
 
@@ -104,7 +112,7 @@ class SaveLocationActivity : AppCompatActivity() {
 			val photoFile = createImageFile()
 			// Continue only if the File was successfully created
 			if (photoFile != null) {
-				val photoURI = FileProvider.getUriForFile(this, "com.example.android.fileprovider", photoFile)
+				val photoURI = FileProvider.getUriForFile(this, "com.zen.zfoodie.provider", photoFile)
 				takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
 				startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
 			}

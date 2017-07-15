@@ -3,7 +3,6 @@ package com.zen.zfoodie
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity() {
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 		R.id.add_location ->
 		{
-			Log.d("TEST", "add clicked")
 			startActivity(Intent(baseContext, SaveLocationActivity::class.java))
 			true
 		}

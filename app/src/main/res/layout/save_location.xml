@@ -17,13 +17,27 @@
             android:inputType="text"
             android:text="Title"/>
 
-        <ImageView
-            android:id="@+id/ivMainProfile"
-            android:layout_width="match_parent"
-            android:layout_height="100sp"
-            android:layout_weight="1"
-            android:padding="5sp"
+        <FrameLayout android:layout_width="match_parent" android:layout_height="150sp">
+            <com.joanzapata.iconify.widget.IconTextView
+              android:id="@+id/tvAddPic"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:text="{fa-plus}"
+              android:textSize="150sp"
+              android:textAlignment="center"
+
             />
+
+            <ImageView
+              android:id="@+id/ivMainProfile"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_weight="1"
+              android:padding="5sp"
+              android:visibility="gone"
+            />
+
+        </FrameLayout>
 
         <MultiAutoCompleteTextView
             android:id="@+id/autoTags"
