@@ -33,7 +33,7 @@ object Client {
 		}
 	}
 
-	fun uploadImage(image: File, imageName: String, title: String, tags: String, review: String, rating: Float) : Deferred<Response> {
+	fun uploadImage(image: File, imageName: String, title: String, tags: String, review: String, rating: Float, lg: Double, lt: Double, address: String) : Deferred<Response> {
 		return async(CommonPool) {
 			val requestBody = MultipartBody.Builder()
 				.setType(MultipartBody.FORM)
@@ -41,6 +41,9 @@ object Client {
 				.addFormDataPart("tags", tags)
 				.addFormDataPart("review", review)
 				.addFormDataPart("rating", rating.toString())
+				.addFormDataPart("longitude", lg.toString())
+				.addFormDataPart("latitude", lt.toString())
+				.addFormDataPart("address", address)
 				.addFormDataPart("image", imageName, RequestBody.create(MediaType.parse("image/jpeg"), image))
 				.build()
 			val request = Request.Builder().url("http://192.168.1.15:8080/save-location").post(requestBody).build()

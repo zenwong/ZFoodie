@@ -42,6 +42,7 @@ app.post('/save-location', cpUpload, function (req, res, next) {
   // req.body will contain the text fields, if there were any
   console.log(req.body.title);
   console.log(req.body.rating);
+  console.log(req.body.address);
 })
 
 app.listen(8080);

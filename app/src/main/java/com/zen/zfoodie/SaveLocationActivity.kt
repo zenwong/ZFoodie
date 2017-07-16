@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
 import android.os.Build
@@ -19,7 +20,6 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.RatingBar
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
 import com.squareup.picasso.Picasso
@@ -32,12 +32,14 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-
 class SaveLocationActivity : AppCompatActivity() {
 	private val REQUEST_PERMISSIONS_REQUEST_CODE = 34
 	private val REQUEST_TAKE_PHOTO = 1
-	private var imgPath : String? = null
-	private var imgUri : Uri? = null
+	private var imgPath: String? = null
+	private var imgUri: Uri? = null
+	private var lg: Double? = null
+	private var lt: Double? = null
+	private var address: String? = null
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -47,8 +49,8 @@ class SaveLocationActivity : AppCompatActivity() {
 
 		getAddress()
 
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
-			if(!checkPermissions()) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			if (!checkPermissions()) {
 				requestPermissions()
 				Log.d("TEST", "requesting permissions")
 			} else {
@@ -62,17 +64,13 @@ class SaveLocationActivity : AppCompatActivity() {
 			testIntent()
 		}
 
-		ratingsStar.onRatingBarChangeListener = RatingBar.OnRatingBarChangeListener { ratingsbar, rating, fromUser ->
-			Log.d("TEST", "rating: $rating")
-		}
-
 		btnSave.setOnClickListener {
 			launch(UI) {
 
 				try {
 					val resp = Client.uploadImage(File(imgPath), "test.jpg",
 						tvTitle.text.toString(), autoTags.text.toString(),
-						editReview.text.toString(), ratingsStar.rating).await()
+						editReview.text.toString(), ratingsStar.rating, lg!!, lt!!, address!!).await()
 
 					Log.d("TEST", "upload code: $resp.code()")
 
@@ -94,14 +92,33 @@ class SaveLocationActivity : AppCompatActivity() {
 		val fusedClient = LocationServices.getFusedLocationProviderClient(this)
 		fusedClient.lastLocation.addOnSuccessListener(object : OnSuccessListener<Location> {
 			override fun onSuccess(location: Location?) {
-				location.let {
+				if (location != null) {
+					lg = location.longitude
+					lt = location.latitude
+					val geocoder = Geocoder(baseContext, Locale.getDefault())
+					val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
 					Log.d("TEST", "location $location.toString()")
+
+					address = addresses[0].getAddressLine(0)
+					editAddress.setText(addresses[0].getAddressLine(0))
+
+					if (addresses == null || addresses.size == 0) {
+						Log.e("TEST", "no address found")
+					} else {
+						val address = addresses[0]
+						val addressFragments = ArrayList<String>()
+						for(i in 1 .. address.maxAddressLineIndex) {
+							addressFragments.add(address.getAddressLine(i))
+							Log.d("TEST", address.getAddressLine(i))
+						}
+
+					}
 				}
 			}
 		})
 	}
 
-	fun checkPermissions() : Boolean {
+	fun checkPermissions(): Boolean {
 		val permissionState = ActivityCompat.checkSelfPermission(this,
 			Manifest.permission.ACCESS_FINE_LOCATION)
 		return permissionState == PackageManager.PERMISSION_GRANTED
@@ -181,7 +198,7 @@ class SaveLocationActivity : AppCompatActivity() {
 				Picasso.with(baseContext).load(imgUri).fit().centerCrop().into(ivMainProfile)
 
 				tvAddPic.visibility = View.GONE
-				ivMainProfile.visibility  = View.VISIBLE
+				ivMainProfile.visibility = View.VISIBLE
 			} catch (e: IOException) {
 				e.printStackTrace()
 			}
@@ -210,27 +227,27 @@ class SaveLocationActivity : AppCompatActivity() {
 	}
 
 	fun setPic() {
-    // Get the dimensions of the View
-    val targetW = ivMainProfile.getWidth()
-    val targetH = ivMainProfile.getHeight()
+		// Get the dimensions of the View
+		val targetW = ivMainProfile.getWidth()
+		val targetH = ivMainProfile.getHeight()
 
-    // Get the dimensions of the bitmap
-    val bmOptions = BitmapFactory.Options()
-    bmOptions.inJustDecodeBounds = true
-    BitmapFactory.decodeFile(imgPath, bmOptions)
-    val photoW = bmOptions.outWidth
-    val photoH = bmOptions.outHeight
+		// Get the dimensions of the bitmap
+		val bmOptions = BitmapFactory.Options()
+		bmOptions.inJustDecodeBounds = true
+		BitmapFactory.decodeFile(imgPath, bmOptions)
+		val photoW = bmOptions.outWidth
+		val photoH = bmOptions.outHeight
 
-    // Determine how much to scale down the image
-    val scaleFactor = Math.min(photoW/targetW, photoH/targetH)
+		// Determine how much to scale down the image
+		val scaleFactor = Math.min(photoW / targetW, photoH / targetH)
 
-    // Decode the image file into a Bitmap sized to fill the View
-    bmOptions.inJustDecodeBounds = false
-    bmOptions.inSampleSize = scaleFactor
-    bmOptions.inPurgeable = true
+		// Decode the image file into a Bitmap sized to fill the View
+		bmOptions.inJustDecodeBounds = false
+		bmOptions.inSampleSize = scaleFactor
+		bmOptions.inPurgeable = true
 
-    val bitmap = BitmapFactory.decodeFile(imgPath, bmOptions)
-    ivMainProfile.setImageBitmap(bitmap)
-}
+		val bitmap = BitmapFactory.decodeFile(imgPath, bmOptions)
+		ivMainProfile.setImageBitmap(bitmap)
+	}
 
 }

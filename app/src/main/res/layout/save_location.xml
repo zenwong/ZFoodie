@@ -17,7 +17,16 @@
 			android:inputType="text"
 			android:text="Title"/>
 
-		<FrameLayout android:layout_width="match_parent" android:layout_height="150sp">
+		<EditText
+			android:id="@+id/editAddress"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:maxLines="1"
+			android:inputType="text"
+			/>
+
+		<FrameLayout android:layout_width="match_parent" android:layout_height="200sp">
 			<com.joanzapata.iconify.widget.IconTextView
 				android:id="@+id/tvAddPic"
 				android:layout_width="match_parent"
