@@ -1,0 +1,19 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.15.3",
+    "georedis": "^3.1.1",
+    "multer": "^1.3.0",
+    "path": "^0.12.7",
+    "pug": "^2.0.0-rc.2",
+    "redis": "^2.7.1"
+  }
+}

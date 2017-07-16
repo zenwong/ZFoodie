@@ -42,7 +42,25 @@ var nearbys = upload.fields([
   { name: 'address', maxCount: 1 }
   ])
 app.post('/nearby', nearbys, function(req,res,next) {
-  console.log(req.body.longitude);
+ var
+	latitude  = req.body.latitude,    // req.body contains the post values
+	longitude = req.body.longitude;
+  
+	client.georadius('geo:locations', req.body.longitude, req.body.latitude, '5', 'km', 'WITHCOORD', 'WITHDIST', 'ASC', function(err, results) {
+		results = results.map(function(aResult) {
+			var	resultObject = {
+				address   : aResult[0],
+				distance  : parseFloat(aResult[1]),
+				longitude : parseFloat(aResult[2][0]),
+				latitude  : parseFloat(aResult[2][1])
+			};
+
+			return resultObject;
+		})
+		var json = JSON.stringify(results);
+		console.log(json);
+		res.send(json);
+	})
 })
 
 app.listen(8080);

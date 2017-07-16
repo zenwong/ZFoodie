@@ -13,6 +13,7 @@ import okhttp3.*
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 object Client {
 	val client = OkHttpClient.Builder()
@@ -41,8 +42,28 @@ object Client {
 				.addFormDataPart("latitude", location.latitude.toString())
 				.addFormDataPart("address", addresses[0].getAddressLine(0))
 				.build()
-			val request = Request.Builder().url("http://192.168.1.15:8080/nearby").post(requestBody).build()
-			Log.d("TEST", client.newCall(request).execute().body()!!.string())
+			val request = Request.Builder().url("http://192.168.1.3:8080/nearby").post(requestBody).build()
+			val response = client.newCall(request).execute()
+			//Log.d("TEST", response.body()!!.string())
+			val list = mapper.readValue<ArrayList<NearBys>>(response.body()!!.string())
+			Log.d("TEST", list.toString())
+		}
+	}
+
+	fun fetchNearby(location: Location, baseContext: Context) : Deferred<ArrayList<NearBys>> {
+		return async(CommonPool) {
+			val geocoder = Geocoder(baseContext, Locale.getDefault())
+			val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+
+			val requestBody = MultipartBody.Builder()
+				.setType(MultipartBody.FORM)
+				.addFormDataPart("longitude", location.longitude.toString())
+				.addFormDataPart("latitude", location.latitude.toString())
+				.addFormDataPart("address", addresses[0].getAddressLine(0))
+				.build()
+			val request = Request.Builder().url("http://192.168.1.3:8080/nearby").post(requestBody).build()
+			val response = client.newCall(request).execute()
+			mapper.readValue<ArrayList<NearBys>>(response.body()!!.string())
 		}
 	}
 
@@ -59,11 +80,12 @@ object Client {
 				.addFormDataPart("address", address)
 				.addFormDataPart("image", imageName, RequestBody.create(MediaType.parse("image/jpeg"), image))
 				.build()
-			val request = Request.Builder().url("http://192.168.1.15:8080/save-location").post(requestBody).build()
+			val request = Request.Builder().url("http://192.168.1.3:8080/save-location").post(requestBody).build()
 			client.newCall(request).execute()
 		}
 	}
 
 }
 
+data class NearBys(val longitude: Double, val latitude: Double, val address: String, val distance: Double)
 data class Posts(val albumId: Int, val id: Int, val title: String, val url: String, val thumbnailUrl: String)

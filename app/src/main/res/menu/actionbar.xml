@@ -5,4 +5,8 @@
 	      android:icon="@android:drawable/ic_menu_add"
 	      android:title="@string/add"
 	      myapp:showAsAction="ifRoom" />
+    <item android:id="@+id/menu_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="@string/add"
+        myapp:showAsAction="ifRoom" />
 </menu>
