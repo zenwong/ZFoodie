@@ -53,4 +53,13 @@ app.post('/save-location', cpUpload, function (req, res, next) {
   })
 })
 
+var nearbys = upload.fields([
+  { name: 'longitude', maxCount: 1 },
+  { name: 'latitude', maxCount: 1 },
+  { name: 'address', maxCount: 1 }
+  ])
+app.post('/nearby', nearbys, function(req,res,next) {
+  console.log(req.body.longitude);
+})
+
 app.listen(8080);

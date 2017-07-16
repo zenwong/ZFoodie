@@ -9,4 +9,6 @@ class App : Application() {
 		super.onCreate()
 		Iconify.with(FontAwesomeModule())
 	}
+
+
 }
