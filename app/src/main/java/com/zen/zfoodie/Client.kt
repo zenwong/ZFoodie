@@ -16,20 +16,15 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 object Client {
+	val dns = "http://192.168.1.3:8080"
+	//val dns = "http://zenw.ddns.net"
+
 	val client = OkHttpClient.Builder()
 		.connectTimeout(90, TimeUnit.SECONDS)
 		.readTimeout(90, TimeUnit.SECONDS)
 		.writeTimeout(90, TimeUnit.SECONDS)
 		.build()
 	val mapper = jacksonObjectMapper()
-
-	fun fetchPosts() : Deferred<List<Posts>> {
-		return async(CommonPool) {
-			val request = Request.Builder().url("https://jsonplaceholder.typicode.com/photos").build()
-			val response =  client.newCall(request).execute().body()!!.string()
-			mapper.readValue<ArrayList<Posts>>(response)
-		}
-	}
 
 	fun fetchNear(location: Location, baseContext: Context) {
 		async(CommonPool) {
@@ -42,7 +37,7 @@ object Client {
 				.addFormDataPart("latitude", location.latitude.toString())
 				.addFormDataPart("address", addresses[0].getAddressLine(0))
 				.build()
-			val request = Request.Builder().url("http://192.168.1.3:8080/nearby").post(requestBody).build()
+			val request = Request.Builder().url(dns + "/nearby").post(requestBody).build()
 			val response = client.newCall(request).execute()
 			//Log.d("TEST", response.body()!!.string())
 			val list = mapper.readValue<ArrayList<NearBys>>(response.body()!!.string())
@@ -61,7 +56,7 @@ object Client {
 				.addFormDataPart("latitude", location.latitude.toString())
 				.addFormDataPart("address", addresses[0].getAddressLine(0))
 				.build()
-			val request = Request.Builder().url("http://192.168.1.3:8080/nearby").post(requestBody).build()
+			val request = Request.Builder().url(dns + "/nearby").post(requestBody).build()
 			val response = client.newCall(request).execute()
 			mapper.readValue<ArrayList<NearBys>>(response.body()!!.string())
 		}
@@ -78,9 +73,9 @@ object Client {
 				.addFormDataPart("longitude", lg.toString())
 				.addFormDataPart("latitude", lt.toString())
 				.addFormDataPart("address", address)
-				.addFormDataPart("image", imageName, RequestBody.create(MediaType.parse("image/jpeg"), image))
+				.addFormDataPart("image", address.replace(" ", "-").toLowerCase(), RequestBody.create(MediaType.parse("image/jpeg"), image))
 				.build()
-			val request = Request.Builder().url("http://192.168.1.3:8080/save-location").post(requestBody).build()
+			val request = Request.Builder().url(dns + "/save-location").post(requestBody).build()
 			client.newCall(request).execute()
 		}
 	}
@@ -88,4 +83,3 @@ object Client {
 }
 
 data class NearBys(val longitude: Double, val latitude: Double, val address: String, val distance: Double)
-data class Posts(val albumId: Int, val id: Int, val title: String, val url: String, val thumbnailUrl: String)

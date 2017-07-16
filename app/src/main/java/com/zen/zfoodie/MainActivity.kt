@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), OnSuccessListener<Location> {
 		loc = location
 		launch(UI) {
 			val nearbys = Client.fetchNearby(location, baseContext).await()
-			val adapter = NearbyAdapter(nearbys)
+			val adapter = NearbyAdapter(baseContext, nearbys)
 			val layoutManager = LinearLayoutManager(baseContext)
 			layoutManager.orientation = LinearLayoutManager.VERTICAL
 			rv.layoutManager = layoutManager

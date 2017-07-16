@@ -5,14 +5,15 @@ var redis = require("redis")
 var client = redis.createClient()
 var geo = require('georedis').initialize(client)
 var app = express()
+app.use(express.static(__dirname + '/uploads'))
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './uploads')
   },
   filename: function (req, file, cb) {
-    //cb(null, file.fieldname + '-' + Date.now())
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+    //cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+		cb(null, file.originalname + '.jpg')
   }
 })
 
@@ -26,14 +27,8 @@ var cpUpload = upload.fields([
   { name: 'image', maxCount: 1 }
   ])
 app.post('/save-location', cpUpload, function (req, res, next) {
-  console.log(req.body.title);
-  console.log(req.body.rating);
-  console.log(req.body.address);
-
-  geo.addLocation('singapore', {latitude: req.body.latitude, longitude: req.body.longitude}, function(err, reply){
-  if(err) console.error(err)
-    else console.log('added location:', reply)
-  })
+	client.geoadd('geo:locations', req.body.longitude, req.body.latitude, req.body.address);
+	client.hset('images', req.body.address, req.files.image[0].filename);
 })
 
 var nearbys = upload.fields([
@@ -58,7 +53,6 @@ app.post('/nearby', nearbys, function(req,res,next) {
 			return resultObject;
 		})
 		var json = JSON.stringify(results);
-		console.log(json);
 		res.send(json);
 	})
 })
