@@ -1,6 +1,9 @@
 var express = require('express')
 var multer  = require('multer')
 var path = require('path')
+var redis = require("redis")
+var client = redis.createClient()
+var geo = require('georedis').initialize(client)
 var app = express()
 
 var storage = multer.diskStorage({
@@ -43,6 +46,11 @@ app.post('/save-location', cpUpload, function (req, res, next) {
   console.log(req.body.title);
   console.log(req.body.rating);
   console.log(req.body.address);
+
+  geo.addLocation('singapore', {latitude: req.body.latitude, longitude: req.body.longitude}, function(err, reply){
+  if(err) console.error(err)
+    else console.log('added location:', reply)
+  })
 })
 
 app.listen(8080);
