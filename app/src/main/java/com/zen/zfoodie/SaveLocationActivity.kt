@@ -1,23 +1,13 @@
 package com.zen.zfoodie
 
-import android.Manifest
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.location.Geocoder
 import android.location.Location
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.FileProvider
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import com.google.android.gms.location.LocationServices
@@ -27,7 +17,6 @@ import kotlinx.android.synthetic.main.save_location.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import java.io.File
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -59,23 +48,14 @@ class SaveLocationActivity : AppCompatActivity(), OnSuccessListener<Location> {
 		supportActionBar?.let { title = "Save Location" }
 
 		tvAddPic.setOnClickListener {
-			//dispatchTakePictureIntent()
-			testIntent()
+			takePicIntent()
 		}
 
 		btnSave.setOnClickListener {
 			launch(UI) {
-				try {
-					val resp = Client.uploadImage(File(imgPath), "test.jpg",
-						tvTitle.text.toString(), autoTags.text.toString(),
-						editReview.text.toString(), ratingsStar.rating, lg!!, lt!!, address!!).await()
-
-					Log.d("TEST", "upload code: $resp.code()")
-
-				} catch(ex: IOException) {
-					Log.d("TEST", ex.printStackTrace().toString())
-				}
-
+				Client.uploadImage(File(imgPath), "test.jpg",
+					tvTitle.text.toString(), autoTags.text.toString(),
+					editReview.text.toString(), ratingsStar.rating, lg!!, lt!!, address!!).await()
 			}
 		}
 	}
@@ -85,13 +65,11 @@ class SaveLocationActivity : AppCompatActivity(), OnSuccessListener<Location> {
 		val imageFileName = "JPEG_" + timeStamp + "_"
 		val storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
 		val image = File.createTempFile(imageFileName, ".jpg", storageDir)
-
-		// Save a file: path for use with ACTION_VIEW intents
 		imgPath = image.absolutePath
 		return image
 	}
 
-	fun testIntent() {
+	fun takePicIntent() {
 		val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 		val imageFile = createImageFile()
 		imgPath = imageFile!!.absolutePath
