@@ -80,6 +80,18 @@ object Client {
 		}
 	}
 
+	fun fetchPlaceDetails(address: String) {
+		async(CommonPool) {
+			val requestBody = MultipartBody.Builder()
+				.setType(MultipartBody.FORM)
+				.addFormDataPart("address", address)
+				.build()
+			val request = Request.Builder().url(dns + "/place").post(requestBody).build()
+			val log = client.newCall(request).execute().body()!!.string()
+			Log.d("TEST", log)
+		}
+	}
+
 }
 
 data class NearBys(val longitude: Double, val latitude: Double, val address: String, val distance: Double)

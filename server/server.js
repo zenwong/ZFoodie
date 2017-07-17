@@ -29,6 +29,10 @@ var cpUpload = upload.fields([
 app.post('/save-location', cpUpload, function (req, res, next) {
 	client.geoadd('geo:locations', req.body.longitude, req.body.latitude, req.body.address);
 	client.hset('images', req.body.address, req.files.image[0].filename);
+	client.hset(req.body.address, 'title', req.body.title);
+	client.hset(req.body.address, 'tags', req.body.tags);
+	client.hset(req.body.address, 'rating', req.body.rating);
+	client.hset(req.body.address, 'review', req.body.review);
 })
 
 var nearbys = upload.fields([
@@ -55,6 +59,12 @@ app.post('/nearby', nearbys, function(req,res,next) {
 		var json = JSON.stringify(results);
 		res.send(json);
 	})
+})
+
+app.post('/place', function(req, res, next) {
+ client.hgetall(req.body.address, function(err, results){
+		res.send(results);
+ }) 
 })
 
 app.listen(8080);
