@@ -33,6 +33,7 @@ app.post('/save-location', cpUpload, function (req, res, next) {
 	client.hset(req.body.address, 'tags', req.body.tags);
 	client.hset(req.body.address, 'rating', req.body.rating);
 	client.hset(req.body.address, 'review', req.body.review);
+	res.send(req.body.title);
 })
 
 var nearbys = upload.fields([

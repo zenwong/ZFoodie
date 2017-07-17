@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 object Client {
-	val dns = "http://192.168.1.3:8080"
-	//val dns = "http://zenw.ddns.net"
+	//val dns = "http://192.168.1.3:8080"
+	val dns = "http://zenw.ddns.net"
 
 	val client = OkHttpClient.Builder()
 		.connectTimeout(90, TimeUnit.SECONDS)
@@ -41,7 +41,7 @@ object Client {
 			val response = client.newCall(request).execute()
 			//Log.d("TEST", response.body()!!.string())
 			val list = mapper.readValue<ArrayList<NearBys>>(response.body()!!.string())
-			Log.d("TEST", list.toString())
+			//Log.d("TEST", list.toString())
 		}
 	}
 

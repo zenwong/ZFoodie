@@ -7,7 +7,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import com.google.android.gms.location.LocationServices
@@ -17,6 +19,7 @@ import kotlinx.android.synthetic.main.save_location.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import java.io.File
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -52,9 +55,26 @@ class SaveLocationActivity : AppCompatActivity(), OnSuccessListener<Location> {
 
 		btnSave.setOnClickListener {
 			launch(UI) {
-				Client.uploadImage(File(imgPath), "test.jpg",
-					tvTitle.text.toString(), autoTags.text.toString(),
-					editReview.text.toString(), ratingsStar.rating, lg!!, lt!!, address!!).await()
+				try {
+					if(imgPath != null) {
+						val resp = Client.uploadImage(File(imgPath), "test.jpg",
+							tvTitle.text.toString(), autoTags.text.toString(),
+							editReview.text.toString(), ratingsStar.rating, lg!!, lt!!, address!!).await()
+
+						if(resp.isSuccessful) {
+							Snackbar.make(linearLayout, "Saved", Snackbar.LENGTH_LONG).show()
+							val intent = Intent(baseContext, MainActivity::class.java)
+							startActivity(intent)
+						}
+					} else {
+						Snackbar.make(linearLayout, "Take a pic", Snackbar.LENGTH_LONG).show()
+					}
+
+
+				} catch(ex: IOException) {
+					Snackbar.make(linearLayout, "Network Error", Snackbar.LENGTH_LONG).show()
+				}
+
 			}
 		}
 	}

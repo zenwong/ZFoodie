@@ -8,6 +8,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.save_location.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+import java.io.IOException
 
 class PlaceActivity: AppCompatActivity() {
 
@@ -19,14 +20,20 @@ class PlaceActivity: AppCompatActivity() {
 		//window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
 
 		launch(UI) {
-			val place = Client.fetchPlaceDetails(address).await()
 
-			tvTitle.setText(place.title)
-			autoTags.setText(place.tags)
+			try{
+				val place = Client.fetchPlaceDetails(address).await()
+				tvTitle.setText(place.title)
+				autoTags.setText(place.tags)
+				ratingsStar.rating = place.rating.toFloat()
+				editReview.setText(place.review)
+
+
+			} catch(ex: IOException) {
+
+			}
+
 			editAddress.setText(address)
-			ratingsStar.rating = place.rating.toFloat()
-			editReview.setText(place.review)
-
 			val url = Client.dns + "/" + address.replace(" ", "-").toLowerCase() + ".jpg"
 			Picasso.with(baseContext).load(url).fit().centerCrop().into(ivMainProfile)
 			tvAddPic.visibility = View.GONE

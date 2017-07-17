@@ -33,7 +33,7 @@ class NearbyAdapter(val context: Context, val nearby: ArrayList<NearBys>) : Recy
 			itemView.tvNearName.text = nearby.address
 			itemView.tvNearDistance.text = df.format(nearby.distance) + " km"
 			val url = Client.dns + "/" + nearby.address.replace(" ", "-").toLowerCase() + ".jpg"
-			Log.d("TEST", url)
+			//Log.d("TEST", url)
 			Picasso.with(context).load(url).fit().centerCrop().into(itemView.imgPreview)
 
 			itemView.imgPreview.setOnClickListener {
