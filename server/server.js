@@ -61,7 +61,10 @@ app.post('/nearby', nearbys, function(req,res,next) {
 	})
 })
 
-app.post('/place', function(req, res, next) {
+var place = upload.fields([
+  { name: 'address', maxCount: 1 }
+  ])
+app.post('/place', place, function(req, res, next) {
  client.hgetall(req.body.address, function(err, results){
 		res.send(results);
  }) 

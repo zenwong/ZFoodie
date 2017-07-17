@@ -44,7 +44,6 @@ class SaveLocationActivity : AppCompatActivity(), OnSuccessListener<Location> {
 		val fusedClient = LocationServices.getFusedLocationProviderClient(baseContext)
 		fusedClient.lastLocation.addOnSuccessListener(this@SaveLocationActivity)
 
-		window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
 		supportActionBar?.let { title = "Save Location" }
 
 		tvAddPic.setOnClickListener {
