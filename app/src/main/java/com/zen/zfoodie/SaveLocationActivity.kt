@@ -1,18 +1,16 @@
 package com.zen.zfoodie
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
-import android.location.Geocoder
-import android.location.Location
+import android.location.*
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
-import android.util.Log
 import android.view.View
-import android.view.WindowManager
-import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.save_location.*
@@ -23,29 +21,70 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SaveLocationActivity : AppCompatActivity(), OnSuccessListener<Location> {
+class SaveLocationActivity : AppCompatActivity(), OnSuccessListener<Location>, LocationListener {
 	private val REQUEST_TAKE_PHOTO = 1
 	private var imgPath: String? = null
 	private var imgUri: Uri? = null
 	private var lg: Double? = null
 	private var lt: Double? = null
 	private var address: String? = null
+	private val INTERVAL = (1000 * 10).toLong()
+	private val FASTEST_INTERVAL = (1000 * 5).toLong()
 
-	override fun onSuccess(location: Location) {
+	override fun onLocationChanged(location: Location) {
 		val geocoder = Geocoder(baseContext, Locale.getDefault())
 		val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-		editAddress.setText(addresses[0].getAddressLine(0))
 		lg = location.longitude
 		lt = location.latitude
-		address = addresses[0].getAddressLine(0)
+		address = addresses[0].getAddressLine(0) + " " + addresses[0].postalCode.toString()
+		editAddress.setText(address)
+		val concat = location.longitude.toString() + " : " + location.latitude.toString()
+		tvCoord.text = concat
 	}
 
+	override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {
+	}
+
+	override fun onProviderEnabled(p0: String?) {
+	}
+
+	override fun onProviderDisabled(p0: String?) {
+	}
+
+	override fun onSuccess(location: Location) {
+//		val geocoder = Geocoder(baseContext, Locale.getDefault())
+//		val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+//		editAddress.setText(addresses[0].getAddressLine(0))
+//		lg = location.longitude
+//		lt = location.latitude
+//		address = addresses[0].getAddressLine(0)
+		//Log.d("TEST", addresses.toString())
+	}
+
+	@SuppressLint("MissingPermission")
+	fun setupLocation() {
+		val criteria = Criteria()
+		criteria.accuracy = Criteria.ACCURACY_FINE
+		criteria.powerRequirement = Criteria.POWER_MEDIUM
+		criteria.isAltitudeRequired = false
+		criteria.isBearingRequired = false
+
+		val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    val provider = locationManager.getBestProvider(criteria, true)
+    locationManager.requestLocationUpdates(provider, 0, 0F, this@SaveLocationActivity)
+	}
+
+	@SuppressLint("MissingPermission")
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.save_location)
 
-		val fusedClient = LocationServices.getFusedLocationProviderClient(baseContext)
-		fusedClient.lastLocation.addOnSuccessListener(this@SaveLocationActivity)
+
+		val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0F, this@SaveLocationActivity)
+
+		//val fusedClient = LocationServices.getFusedLocationProviderClient(baseContext)
+		//fusedClient.lastLocation.addOnSuccessListener(this@SaveLocationActivity)
 
 		supportActionBar?.let { title = "Save Location" }
 
