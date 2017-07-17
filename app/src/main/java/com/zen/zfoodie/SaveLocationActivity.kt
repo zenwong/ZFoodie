@@ -10,7 +10,11 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.save_location.*
@@ -52,26 +56,34 @@ class SaveLocationActivity : AppCompatActivity(), OnSuccessListener<Location>, L
 	}
 
 	override fun onSuccess(location: Location) {
-//		val geocoder = Geocoder(baseContext, Locale.getDefault())
-//		val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-//		editAddress.setText(addresses[0].getAddressLine(0))
-//		lg = location.longitude
-//		lt = location.latitude
-//		address = addresses[0].getAddressLine(0)
+		val geocoder = Geocoder(baseContext, Locale.getDefault())
+		val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+		editAddress.setText(addresses[0].getAddressLine(0))
+		lg = location.longitude
+		lt = location.latitude
+		address = addresses[0].getAddressLine(0)
+		val concat = location.longitude.toString() + " : " + location.latitude.toString()
+		tvCoord.text = concat
 		//Log.d("TEST", addresses.toString())
 	}
 
-	@SuppressLint("MissingPermission")
-	fun setupLocation() {
-		val criteria = Criteria()
-		criteria.accuracy = Criteria.ACCURACY_FINE
-		criteria.powerRequirement = Criteria.POWER_MEDIUM
-		criteria.isAltitudeRequired = false
-		criteria.isBearingRequired = false
+//	@SuppressLint("MissingPermission")
+//	fun setupLocation() {
+//		val criteria = Criteria()
+//		criteria.accuracy = Criteria.ACCURACY_FINE
+//		criteria.powerRequirement = Criteria.POWER_MEDIUM
+//		criteria.isAltitudeRequired = false
+//		criteria.isBearingRequired = false
+//
+//		val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//    val provider = locationManager.getBestProvider(criteria, true)
+//    locationManager.requestLocationUpdates(provider, 0, 0F, this@SaveLocationActivity)
+//	}
 
-		val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-    val provider = locationManager.getBestProvider(criteria, true)
-    locationManager.requestLocationUpdates(provider, 0, 0F, this@SaveLocationActivity)
+	override fun onResume() {
+		super.onResume()
+		val fusedClient = LocationServices.getFusedLocationProviderClient(baseContext)
+		fusedClient.lastLocation.addOnSuccessListener(this@SaveLocationActivity)
 	}
 
 	@SuppressLint("MissingPermission")
@@ -79,12 +91,8 @@ class SaveLocationActivity : AppCompatActivity(), OnSuccessListener<Location>, L
 		super.onCreate(savedInstanceState)
 		setContentView(R.layout.save_location)
 
-
-		val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0F, this@SaveLocationActivity)
-
-		//val fusedClient = LocationServices.getFusedLocationProviderClient(baseContext)
-		//fusedClient.lastLocation.addOnSuccessListener(this@SaveLocationActivity)
+		//val locationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+		//locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0F, this@SaveLocationActivity)
 
 		supportActionBar?.let { title = "Save Location" }
 
@@ -143,4 +151,17 @@ class SaveLocationActivity : AppCompatActivity(), OnSuccessListener<Location>, L
 		ivMainProfile.visibility = View.VISIBLE
 	}
 
+
+	override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+		menuInflater.inflate(R.menu.menu_save, menu)
+		return true
+	}
+
+	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+		R.id.menu_update -> {
+
+			true
+		}
+		else -> super.onOptionsItemSelected(item)
+	}
 }
