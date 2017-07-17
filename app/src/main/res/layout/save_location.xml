@@ -1,78 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:maxLines="1"
+            android:text="Title" />
+
+        <EditText
+            android:id="@+id/editAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="text"
+            android:maxLines="1" />
+
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="200sp">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-	<LinearLayout
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:orientation="vertical">
+                <com.joanzapata.iconify.widget.IconTextView
+                    android:id="@+id/tvAddPic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="{fa-plus}"
+                    android:textAlignment="center"
+                    android:textSize="60sp"
+                    android:layout_gravity="center"
 
-		<EditText
-			android:id="@+id/tvTitle"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:maxLines="1"
-			android:inputType="text"
-			android:text="Title"/>
+                    />
 
-		<EditText
-			android:id="@+id/editAddress"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:maxLines="1"
-			android:inputType="text"
-			/>
+                <ImageView
+                    android:id="@+id/ivMainProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="5sp"
+                    android:visibility="gone" />
+            </FrameLayout>
 
-		<FrameLayout android:layout_width="match_parent" android:layout_height="200sp">
-			<com.joanzapata.iconify.widget.IconTextView
-				android:id="@+id/tvAddPic"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:text="{fa-plus}"
-				android:textSize="150sp"
-				android:textAlignment="center"
-
-			/>
-
-			<ImageView
-				android:id="@+id/ivMainProfile"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent"
-				android:layout_weight="1"
-				android:padding="5sp"
-				android:visibility="gone"
-			/>
-
-		</FrameLayout>
-
-		<MultiAutoCompleteTextView
-			android:id="@+id/autoTags"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"/>
-
-		<RatingBar
-			android:id="@+id/ratingsStar"
-			android:numStars="5"
-			android:stepSize="1.0"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"/>
-
-		<EditText
-			android:id="@+id/editReview"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:text="Review"/>
-
-		<Button
-			android:id="@+id/btnSave"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="Save"/>
+        </android.support.v7.widget.CardView>
 
 
-	</LinearLayout>
+
+        <MultiAutoCompleteTextView
+            android:id="@+id/autoTags"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <RatingBar
+            android:id="@+id/ratingsStar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:numStars="5"
+            android:stepSize="1.0" />
+
+        <EditText
+            android:id="@+id/editReview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Review" />
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save" />
+
+
+    </LinearLayout>
 </ScrollView>

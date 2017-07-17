@@ -27,6 +27,7 @@
 		</activity>
 
 		<activity android:name=".SaveLocationActivity" />
+        <activity android:name=".PlaceActivity" />
 
 		<provider
 			android:name="android.support.v4.content.FileProvider"

@@ -1,6 +1,7 @@
 package com.zen.zfoodie
 
 import android.content.Context
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -34,6 +35,13 @@ class NearbyAdapter(val context: Context, val nearby: ArrayList<NearBys>) : Recy
 			val url = Client.dns + "/" + nearby.address.replace(" ", "-").toLowerCase() + ".jpg"
 			Log.d("TEST", url)
 			Picasso.with(context).load(url).fit().centerCrop().into(itemView.imgPreview)
+
+			itemView.imgPreview.setOnClickListener {
+				val intent = Intent(context, PlaceActivity::class.java)
+				intent.putExtra("address", nearby.address)
+				intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+				context.startActivity(intent)
+			}
 		}
 
 
