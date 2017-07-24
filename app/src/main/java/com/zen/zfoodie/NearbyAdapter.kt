@@ -12,18 +12,24 @@ import kotlinx.android.synthetic.main.row_nearby.view.*
 import java.text.DecimalFormat
 
 class NearbyAdapter(val context: Context, val nearby: ArrayList<NearBys>) : RecyclerView.Adapter<NearbyAdapter.ViewHolder>() {
+	var list: ArrayList<NearBys>? = null
 
 	override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 		val view = LayoutInflater.from(parent.context).inflate(R.layout.row_nearby, parent, false)
 		return ViewHolder(view)
 	}
 
+	fun setData(nearbys: ArrayList<NearBys>) {
+		list = nearbys
+		notifyDataSetChanged()
+	}
+
 	override fun getItemCount(): Int {
-		return nearby.size
+		return list!!.size
 	}
 
 	override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-		holder.bind(nearby[position])
+		holder.bind(list!![position])
 	}
 
 	inner class ViewHolder(iv: View) : RecyclerView.ViewHolder(iv) {

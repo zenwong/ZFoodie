@@ -10,12 +10,14 @@ import android.view.Menu
 import android.view.MenuItem
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnSuccessListener
+import com.zen.zfoodie.activities.SavePlaceActivity
 import kotlinx.android.synthetic.main.recycler.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 
 class MainActivity : AppCompatActivity(), OnSuccessListener<Location> {
 	var loc: Location? = null
+	val adapter : NearbyAdapter by lazy { NearbyAdapter(baseContext, arrayListOf()) }
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -26,13 +28,15 @@ class MainActivity : AppCompatActivity(), OnSuccessListener<Location> {
 		super.onResume()
 		val fusedClient = LocationServices.getFusedLocationProviderClient(baseContext)
 		fusedClient.lastLocation.addOnSuccessListener(this@MainActivity)
+		adapter.notifyDataSetChanged()
 	}
 
 	override fun onSuccess(location: Location) {
 		loc = location
 		launch(UI) {
 			val nearbys = Client.fetchNearby(location, baseContext).await()
-			val adapter = NearbyAdapter(baseContext, nearbys)
+			//val adapter = NearbyAdapter(baseContext, nearbys)
+			adapter.setData(nearbys)
 			val layoutManager = LinearLayoutManager(baseContext)
 			layoutManager.orientation = LinearLayoutManager.VERTICAL
 			rv.layoutManager = layoutManager
@@ -47,7 +51,8 @@ class MainActivity : AppCompatActivity(), OnSuccessListener<Location> {
 
 	override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 		R.id.add_location -> {
-			startActivity(Intent(baseContext, SaveLocationActivity::class.java))
+			//startActivity(Intent(baseContext, SaveLocationActivity::class.java))
+			startActivity(Intent(baseContext, SavePlaceActivity::class.java))
 			true
 		}
 		R.id.menu_search -> {
